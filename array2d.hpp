@@ -1,5 +1,6 @@
 #ifndef __ARRAY2D_HPP__
 #define __ARRAY2D_HPP__
+
 #include <iostream>
 
 template <typename A>
