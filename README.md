@@ -1,1 +1,7 @@
-## Matrix Determinant Calculator written in C++
+# Matrix Determinant Calculator written in C++
+
+## Usage
+```
+make determinant
+./determinant
+```
