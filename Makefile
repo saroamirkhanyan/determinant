@@ -1,7 +1,7 @@
 CXX = g++
-CXXFLAGS = -g -Wall -O2
+CXXFLAGS = -g -Wall -O2 --std=c++11
 
-SOURCES = determinant.cpp array2d.cpp
+SOURCES = determinant.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 NAME = determinant
 
