@@ -14,7 +14,7 @@ class array2d {
         array2d(const size_t& n, const size_t& m) {
                 this->n = n;
                 this->m = m;
-                array = new int[n * m];
+                array = new A[n * m];
         }
         private:
         inline size_t inline_index(const size_t& i, const size_t& j) {
