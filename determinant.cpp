@@ -1,38 +1,52 @@
 #include <iostream>
 #include <vector>
+#include <cassert>
+#include <future>
+#include <numeric>
 #include "array2d.hpp"
+#include "bitmask.hpp"
 
-static int __determinant(array2d<int>& matrix, int i, std::vector<bool> visited) {
+template<typename A, typename B>
+static A __determinant(array2d<A>& matrix, size_t i, const B& visited) {
         if(i == matrix.n) return 1;
-        int sum = 0, sign = 1;
-        for(int j = 0; j < matrix.n; j++) {
-                if(visited[j]) continue;
-                std::vector<bool> visited_minor;
-                copy(visited.begin(), visited.end(), back_inserter(visited_minor));
-                visited_minor[j] = true;
-                int minor = __determinant(matrix, i + 1, visited_minor);
-                sum += sign * matrix.at(i, j) * minor;
-                sign *= -1;
+        short sign = 1;
+        std::vector<std::future<A>> additives;
+        for(size_t j = 0; j < matrix.n; j++) {
+                if (bitmask::has<B>(visited, j)) continue;
+                auto __calc_additive = [&matrix, visited, i, j](short sign) {
+                        A visited_minor = bitmask::set(visited, j);
+                        A minor = __determinant(matrix, i + 1, visited_minor);
+                        return sign * matrix.at(i, j) * minor;
+                };
+                additives.push_back(std::async(std::launch::async, __calc_additive, sign));
+                sign *= - 1;
         }
-        return sum;
+        return std::accumulate(
+                        begin(additives), 
+                        end(additives), 
+                        0, 
+                        [&](int accumulator, std::future<A>& additive) {
+                                return accumulator + additive.get();
+                        });
 }
 
-int determinant(array2d<int>& matrix) {
-        std::vector<bool> visited(matrix.n, false);
-        return __determinant(matrix, 0, visited);
+template<typename A>
+A determinant(array2d<A>& matrix) {
+        assert(matrix.n < 64);
+        return __determinant<A, unsigned int>(matrix, 0, 0);
 }
 
 int main() {
         int n;
         std::cin >> n;
         array2d<int> matrix(n, n);
-        for(int i = 0; i < n; i++) {
-                for(int j = 0; j < n; j++) {
+        for(size_t i = 0; i < n; i++) {
+                for(size_t j = 0; j < n; j++) {
                         std::cin >> matrix.index(i, j);
                 }
         }
         array2d_utils::print(matrix);
-        std::cout << determinant(matrix) << std::endl;
+        std::cout << determinant<int>(matrix) << std::endl;
         return 0;
 }
 
