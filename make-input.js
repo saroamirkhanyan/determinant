@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const OUTPUT_FILE_NAME = 'input-example';
-const SIZE = 4;
+const SIZE = 13;
 const MIN_VALUE = 1;
 const MAX_VALUE = 3;
 
