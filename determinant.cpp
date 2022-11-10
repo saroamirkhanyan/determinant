@@ -19,7 +19,7 @@ static A __determinant(array2d<A>& matrix, size_t i, const B& visited) {
                         A minor = __determinant(matrix, i + 1, visited_minor);
                         return sign * matrix.at(i, j) * minor;
                 };
-                if(i > 1) {
+                if(matrix.n < 9 || i > 1) {
                         sum += __calc_additive(sign);
                 } else {
                         additives.push_back(std::async(std::launch::async, 
